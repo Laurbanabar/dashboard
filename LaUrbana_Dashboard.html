@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Urbana — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #0f0d0a;
+    --oscuro: #1a1714;
+    --carbon: #2a2520;
+    --tierra: #3d342b;
+    --dorado: #c9a84c;
+    --dorado-claro: #e8c96a;
+    --crema: #f5efe6;
+    --blanco: #fdfaf6;
+    --rojo: #c0392b;
+    --verde: #2d7a4f;
+    --naranja: #d4681e;
+    --gris: #8a7e74;
+    --borde: rgba(201,168,76,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--negro);
+    color: var(--crema);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--oscuro);
+    border-bottom: 1px solid var(--borde);
+    padding: 1.2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--dorado);
+    letter-spacing: 0.05em;
+  }
+
+  .logo span {
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: var(--gris);
+    display: block;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: -4px;
+  }
+
+  .fecha {
+    font-size: 0.75rem;
+    color: var(--gris);
+    text-align: right;
+  }
+
+  /* NAV TABS */
+  nav {
+    background: var(--oscuro);
+    border-bottom: 1px solid var(--borde);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 1rem;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 0.85rem 1.2rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--gris);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .tab.active {
+    color: var(--dorado);
+    border-bottom-color: var(--dorado);
+  }
+
+  .tab:hover { color: var(--crema); }
+
+  /* MAIN */
+  main {
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--oscuro);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dorado);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ALERTAS */
+  .alerta {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.9rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.6rem;
+    border-left: 3px solid;
+  }
+
+  .alerta.roja { background: rgba(192,57,43,0.12); border-color: var(--rojo); }
+  .alerta.naranja { background: rgba(212,104,30,0.12); border-color: var(--naranja); }
+  .alerta.verde { background: rgba(45,122,79,0.12); border-color: var(--verde); }
+
+  .alerta-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .alerta-texto { font-size: 0.83rem; line-height: 1.4; }
+  .alerta-texto strong { display: block; margin-bottom: 2px; font-weight: 600; }
+  .alerta-texto small { color: var(--gris); font-size: 0.75rem; }
+
+  /* ESCANDALLO TABLE */
+  .plato-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.83rem;
+  }
+
+  .plato-row:last-child { border-bottom: none; }
+
+  .plato-nombre { font-weight: 500; color: var(--crema); }
+  .plato-pvp { color: var(--gris); font-size: 0.75rem; }
+
+  .badge {
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 52px;
+  }
+
+  .badge.verde { background: rgba(45,122,79,0.25); color: #5dba85; }
+  .badge.naranja { background: rgba(212,104,30,0.25); color: #e8854a; }
+  .badge.rojo { background: rgba(192,57,43,0.25); color: #e05a4a; }
+  .badge.gris { background: rgba(138,126,116,0.2); color: var(--gris); }
+
+  /* PROVEEDORES */
+  .proveedor-block {
+    margin-bottom: 1rem;
+  }
+
+  .proveedor-nombre {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dorado);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .precio-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .precio-row:last-child { border-bottom: none; }
+  .precio-producto { color: var(--crema); }
+  .precio-formato { color: var(--gris); font-size: 0.72rem; }
+  .precio-valor { color: var(--dorado-claro); font-weight: 600; font-size: 0.85rem; }
+
+  /* STOCK */
+  .stock-categoria {
+    margin-bottom: 1.2rem;
+  }
+
+  .stock-cat-titulo {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gris);
+    margin-bottom: 0.5rem;
+  }
+
+  .stock-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.82rem;
+  }
+
+  .stock-item:last-child { border-bottom: none; }
+
+  .stock-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .stock-dot.ok { background: var(--verde); }
+  .stock-dot.bajo { background: var(--naranja); }
+  .stock-dot.critico { background: var(--rojo); }
+
+  .stock-nombre { flex: 1; color: var(--crema); }
+  .stock-cantidad { color: var(--gris); font-size: 0.75rem; }
+
+  /* PENDIENTE */
+  .pendiente-section {
+    background: var(--carbon);
+    border: 1px dashed var(--borde);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .pendiente-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .pendiente-titulo { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--dorado); margin-bottom: 0.4rem; }
+  .pendiente-texto { font-size: 0.8rem; color: var(--gris); line-height: 1.5; }
+
+  /* RESUMEN TOP */
+  .resumen-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .resumen-card {
+    background: var(--oscuro);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .resumen-numero {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dorado);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .resumen-label {
+    font-size: 0.7rem;
+    color: var(--gris);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* NOTA */
+  .nota-pie {
+    font-size: 0.72rem;
+    color: var(--gris);
+    text-align: center;
+    padding: 1rem 0;
+    border-top: 1px solid var(--borde);
+    margin-top: 1rem;
+    line-height: 1.5;
+  }
+
+  /* ANIMACION ENTRADA */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section.active .card,
+  .section.active .resumen-grid,
+  .section.active .pendiente-section {
+    animation: fadeUp 0.3s ease forwards;
+  }
+
+  .section.active .card:nth-child(2) { animation-delay: 0.05s; }
+  .section.active .card:nth-child(3) { animation-delay: 0.1s; }
+  .section.active .card:nth-child(4) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    La Urbana
+    <span>Bar · A Coruña</span>
+  </div>
+  <div class="fecha" id="fecha-hoy"></div>
+</header>
+
+<nav>
+  <div class="tab active" onclick="showTab('alertas')">🔔 Alertas</div>
+  <div class="tab" onclick="showTab('escandallos')">📊 Escandallos</div>
+  <div class="tab" onclick="showTab('stock')">📦 Stock</div>
+  <div class="tab" onclick="showTab('proveedores')">🚚 Proveedores</div>
+  <div class="tab" onclick="showTab('comandas')">🍽️ Comandas</div>
+</nav>
+
+<main>
+
+  <!-- ALERTAS -->
+  <div class="section active" id="tab-alertas">
+
+    <div class="resumen-grid">
+      <div class="resumen-card">
+        <div class="resumen-numero">3</div>
+        <div class="resumen-label">Alertas críticas</div>
+      </div>
+      <div class="resumen-card">
+        <div class="resumen-numero">11</div>
+        <div class="resumen-label">Precios pendientes</div>
+      </div>
+      <div class="resumen-card">
+        <div class="resumen-numero">16</div>
+        <div class="resumen-label">Platos en carta</div>
+      </div>
+      <div class="resumen-card">
+        <div class="resumen-numero">5</div>
+        <div class="resumen-label">Proveedores activos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚨 Alertas de stock</div>
+
+      <div class="alerta roja">
+        <div class="alerta-icon">🔴</div>
+        <div class="alerta-texto">
+          <strong>Espirales de colores — ROTAR URGENTE</strong>
+          <small>Producto del cocinero anterior · Sin salida activa</small>
+        </div>
+      </div>
+
+      <div class="alerta roja">
+        <div class="alerta-icon">🔴</div>
+        <div class="alerta-texto">
+          <strong>Tomate entero pelado (bote grande) — ROTAR URGENTE</strong>
+          <small>Producto del cocinero anterior</small>
+        </div>
+      </div>
+
+      <div class="alerta naranja">
+        <div class="alerta-icon">🟠</div>
+        <div class="alerta-texto">
+          <strong>Pimentón de la Vera — quedan ~4 dedos</strong>
+          <small>Dulce y picante · Uso frecuente en salsas y adobos</small>
+        </div>
+      </div>
+
+      <div class="alerta naranja">
+        <div class="alerta-icon">🟠</div>
+        <div class="alerta-texto">
+          <strong>Canela — quedan ~3 dedos</strong>
+          <small>Confirmar si está en uso activo</small>
+        </div>
+      </div>
+
+      <div class="alerta naranja">
+        <div class="alerta-icon">🟠</div>
+        <div class="alerta-texto">
+          <strong>Bovril — sin uso identificado</strong>
+          <small>Revisar si se usa o dar de baja del inventario</small>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚠️ Pendientes operativos</div>
+
+      <div class="alerta naranja">
+        <div class="alerta-icon">🏷️</div>
+        <div class="alerta-texto">
+          <strong>Sistema de etiquetado — sin implementar</strong>
+          <small>Obligación legal · Riesgo en inspección sanitaria · Pendiente sistema colores por día</small>
+        </div>
+      </div>
+
+      <div class="alerta naranja">
+        <div class="alerta-icon">🧮</div>
+        <div class="alerta-texto">
+          <strong>11 precios de compra pendientes</strong>
+          <small>Pollo, lomo, huevos, aceites, Gadis, DIS · Esperando facturas de César</small>
+        </div>
+      </div>
+
+      <div class="alerta verde">
+        <div class="alerta-icon">🍳</div>
+        <div class="alerta-texto">
+          <strong>Escandallos completos al 60%</strong>
+          <small>Se completarán al recibir facturas pendientes</small>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="nota-pie">Dashboard en construcción · Marzo 2026<br>Los datos se actualizan manualmente cuando llegan nuevas facturas</div>
+  </div>
+
+  <!-- ESCANDALLOS -->
+  <div class="section" id="tab-escandallos">
+
+    <div class="card">
+      <div class="card-title">📊 Coste vs. PVP por plato</div>
+      <div style="font-size:0.72rem; color:var(--gris); margin-bottom:0.8rem;">% coste materia prima sobre PVP sin IVA · Objetivo &lt; 35%</div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Croquetas (tapa)</div>
+          <div class="plato-pvp">PVP 3,20€ · Coste 0,57€</div>
+        </div>
+        <div></div>
+        <div class="badge verde">17,8%</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Tequeños (tapa)</div>
+          <div class="plato-pvp">PVP 4,70€ · Coste 1,20€</div>
+        </div>
+        <div></div>
+        <div class="badge verde">25,5%</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Criollo con patatas</div>
+          <div class="plato-pvp">PVP 4,50€ · Coste parcial</div>
+        </div>
+        <div></div>
+        <div class="badge naranja">Incompleto</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Ensaladilla (tapa)</div>
+          <div class="plato-pvp">PVP 4,70€</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Tortilla mediana</div>
+          <div class="plato-pvp">PVP 3,20€</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Raxo con patatas</div>
+          <div class="plato-pvp">PVP 8,50€ media</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Pollo Urbana</div>
+          <div class="plato-pvp">PVP 8,50€ media</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Pollo Flambeado</div>
+          <div class="plato-pvp">PVP 9,20€ media</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Patatas bravas</div>
+          <div class="plato-pvp">PVP 4,70€</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Coulant chocolate</div>
+          <div class="plato-pvp">PVP 4,50€</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+      <div class="plato-row">
+        <div>
+          <div class="plato-nombre">Crepe al mascarpone</div>
+          <div class="plato-pvp">PVP 4,20€</div>
+        </div>
+        <div></div>
+        <div class="badge gris">Pendiente</div>
+      </div>
+
+    </div>
+
+    <div class="nota-pie">Los porcentajes se completarán cuando lleguen todos los precios de compra.<br>Verde &lt;28% · Naranja 28–35% · Rojo &gt;35%</div>
+  </div>
+
+  <!-- STOCK -->
+  <div class="section" id="tab-stock">
+
+    <div class="card">
+      <div class="card-title">🥩 Proteínas</div>
+      <div class="stock-categoria">
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Pechuga de pollo (congelada)</div><div class="stock-cantidad">Bolsas 3kg</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Lomo de cerdo (congelado)</div><div class="stock-cantidad">Cinta</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Chorizo criollo</div><div class="stock-cantidad">4 uds/bolsa · 0,85€/ud</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Panceta al vacío</div><div class="stock-cantidad">Torre Nuñez</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Atún desmigado</div><div class="stock-cantidad">Bote 1kg · Makro</div></div>
+        <div class="stock-item"><div class="stock-dot bajo"></div><div class="stock-nombre">Chorizo rojo ahumado</div><div class="stock-cantidad">2 uds/bolsa · precio pendiente DIS</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🥔 Verduras y frescos</div>
+      <div class="stock-categoria">
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Patata pelada al vacío</div><div class="stock-cantidad">Bolsas 5kg · 1,75€/kg</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Tomate cherry rama</div><div class="stock-cantidad">4,50€/kg · Fructifera</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Tomate pera</div><div class="stock-cantidad">2,25€/kg · Fructifera</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Cebolla, puerro, ajo</div><div class="stock-cantidad">Precios pendientes</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Pimientos (rojo, verde, Padrón)</div><div class="stock-cantidad">Precios pendientes</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">❄️ Congelados</div>
+      <div class="stock-categoria">
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Tequeños queso Hacendado</div><div class="stock-cantidad">12 uds/bolsa · 4,80€ · Mercadona</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Croquetas jamón Hacendado</div><div class="stock-cantidad">~15 uds/bolsa · 2,85€ · Mercadona</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Patatas bravas prefritas</div><div class="stock-cantidad">Bolsas 5kg · precio pendiente</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Coulant de chocolate</div><div class="stock-cantidad">Makro · precio pendiente</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🫙 Salsas y condimentos</div>
+      <div class="stock-categoria">
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Salsa de soja Hacendado</div><div class="stock-cantidad">1,30€/ud · Mercadona</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Tahini</div><div class="stock-cantidad">200g · 3,00€ · 15€/kg · Mercadona</div></div>
+        <div class="stock-item"><div class="stock-dot ok"></div><div class="stock-nombre">Mayonesa Hellmann's</div><div class="stock-cantidad">Cubo 4,6kg · precio pendiente</div></div>
+        <div class="stock-item"><div class="stock-dot bajo"></div><div class="stock-nombre">Pimentón de la Vera</div><div class="stock-cantidad">⚠️ Quedan ~4 dedos</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧺 Rotación urgente</div>
+      <div class="alerta roja">
+        <div class="alerta-icon">🔴</div>
+        <div class="alerta-texto"><strong>Espirales de colores</strong><small>Cocinero anterior · Sin uso activo</small></div>
+      </div>
+      <div class="alerta roja">
+        <div class="alerta-icon">🔴</div>
+        <div class="alerta-texto"><strong>Tomate entero pelado (bote grande)</strong><small>Cocinero anterior · Rotar urgente</small></div>
+      </div>
+      <div class="alerta naranja">
+        <div class="alerta-icon">🟠</div>
+        <div class="alerta-texto"><strong>Bovril</strong><small>Sin uso identificado · Revisar</small></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROVEEDORES -->
+  <div class="section" id="tab-proveedores">
+
+    <div class="card">
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🟢 Fructifera — Verduras</div>
+        <div class="precio-row"><span class="precio-producto">Patata pelada</span><span class="precio-valor">1,75 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Tomate cherry rama</span><span class="precio-valor">4,50 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Tomate pera</span><span class="precio-valor">2,25 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Resto verduras</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+      </div>
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🟢 Mercadona — Varios</div>
+        <div class="precio-row"><span class="precio-producto">Chorizo criollo</span><span class="precio-valor">0,85 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Salsa de soja</span><span class="precio-valor">1,30 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Tahini (bote 200g)</span><span class="precio-valor">3,00 € · 15€/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Tequeños queso (12ud)</span><span class="precio-valor">4,80 € · 0,40€/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Croquetas jamón (~15ud)</span><span class="precio-valor">2,85 € · 0,19€/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Garbanzo cocido</span><span class="precio-valor">0,75 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Garbanzo seco 1kg</span><span class="precio-valor">2,20 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Lenteja pardina 1kg</span><span class="precio-valor">2,10 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Alubia blanca</span><span class="precio-valor">2,45 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Queso Arzúa-Ulloa Punteiro</span><span class="precio-valor">7,21 €/pieza</span></div>
+        <div class="precio-row"><span class="precio-producto">Panceta curada Torre Nuñez</span><span class="precio-valor">~4,30 €/sobre</span></div>
+      </div>
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🟢 Makro — Varios</div>
+        <div class="precio-row"><span class="precio-producto">Grelos Rosaleira (1650g)</span><span class="precio-valor">8,95 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Tomillo hoja (300g)</span><span class="precio-valor">3,95 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Jengibre polvo (420g)</span><span class="precio-valor">5,75 €/ud</span></div>
+        <div class="precio-row"><span class="precio-producto">Guantes nitrilo (100ud)</span><span class="precio-valor">3,25 €/caja</span></div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Coulant congelado</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Atún desmigado 1kg</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+      </div>
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🟢 Veracruz — Cafetería</div>
+        <div class="precio-row"><span class="precio-producto">Café grano arábica</span><span class="precio-valor">23,95 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Descafeinado arábica</span><span class="precio-valor">24,95 €/kg</span></div>
+        <div class="precio-row"><span class="precio-producto">Infusiones pirámides (30ud)</span><span class="precio-valor">9,75 €/caja</span></div>
+        <div class="precio-row"><span class="precio-producto">ColaCao (50 sobres)</span><span class="precio-valor">17,50 €/estuche</span></div>
+      </div>
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🟡 Gadis — Lácteos y postres</div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Nata cocinar, mascarpone, quesos</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Mantequilla, soletillas, flanín</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+      </div>
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🟡 DIS — Embutidos</div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Chorizo rojo ahumado</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COMANDAS -->
+  <div class="section" id="tab-comandas">
+    <div class="pendiente-section">
+      <div class="pendiente-icon">📡</div>
+      <div class="pendiente-titulo">Datos del TPV pendientes</div>
+      <div class="pendiente-texto">Esta sección mostrará rotación de platos por horario y día, y correlación entre platos y bebidas.<br><br>Para activarla se necesita un export de comandas del TPV de César con fecha, hora, plato y bebida asociada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Qué se podrá ver aquí</div>
+      <div class="alerta verde">
+        <div class="alerta-icon">📈</div>
+        <div class="alerta-texto"><strong>Platos más vendidos por horario</strong><small>Para optimizar turnos de cocina y mise en place</small></div>
+      </div>
+      <div class="alerta verde">
+        <div class="alerta-icon">🍺</div>
+        <div class="alerta-texto"><strong>Correlación plato-bebida</strong><small>Qué bebida acompaña a cada plato · Base para diseñar combos y maridajes</small></div>
+      </div>
+      <div class="alerta verde">
+        <div class="alerta-icon">📅</div>
+        <div class="alerta-texto"><strong>Días fuertes vs días flojos</strong><small>Para ajustar compras y personal por franja</small></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // Fecha
+  const d = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('fecha-hoy').innerHTML = `${dias[d.getDay()]}<br>${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+
+  // Tabs
+  function showTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
