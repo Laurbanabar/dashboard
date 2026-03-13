@@ -339,12 +339,13 @@
 </header>
 
 <nav>
-  <div class="tab active" onclick="showTab('alertas')">🔔 Alertas</div>
-  <div class="tab" onclick="showTab('escandallos')">📊 Escandallos</div>
-  <div class="tab" onclick="showTab('stock')">📦 Stock</div>
-  <div class="tab" onclick="showTab('proveedores')">🚚 Proveedores</div>
-  <div class="tab" onclick="showTab('comandas')">🍽️ Comandas</div>
-  <div class="tab" onclick="showTab('contactos')">📞 Contactos</div>
+  <div class="tab active" data-tab="alertas">🔔 Alertas</div>
+  <div class="tab" data-tab="escandallos">📊 Escandallos</div>
+  <div class="tab" data-tab="stock">📦 Stock</div>
+  <div class="tab" data-tab="proveedores">🚚 Proveedores</div>
+  <div class="tab" data-tab="etiquetado">🏷️ Etiquetado</div>
+  <div class="tab" data-tab="comandas">🍽️ Comandas</div>
+  <div class="tab" data-tab="contactos">📞 Contactos</div>
 </nav>
 
 <main>
@@ -707,6 +708,79 @@
     </div>
   </div>
 
+  <!-- ETIQUETADO -->
+  <div class="section" id="tab-etiquetado">
+
+    <div class="card">
+      <div class="card-title">📅 Color del día de hoy</div>
+      <div style="border-radius:10px; padding:1.2rem; text-align:center; margin-bottom:0.5rem;">
+        <div id="circulo-color" style="width:60px; height:60px; border-radius:50%; margin:0 auto 0.8rem; border:3px solid rgba(0,0,0,0.1)"></div>
+        <div id="nombre-dia" style="font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--texto); margin-bottom:0.3rem;"></div>
+        <div id="color-nombre" style="font-size:0.8rem; color:var(--gris); text-transform:uppercase; letter-spacing:0.1em;"></div>
+      </div>
+      <div style="font-size:0.75rem; color:var(--gris); text-align:center;">Etiqueta todo lo que elabores hoy con este color + la fecha escrita con rotulador</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎨 Sistema de colores por día</div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#e74c3c;display:inline-block;flex-shrink:0"></span>Lunes</span><span class="precio-valor">Rojo</span></div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#e67e22;display:inline-block;flex-shrink:0"></span>Martes</span><span class="precio-valor">Naranja</span></div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#f1c40f;display:inline-block;flex-shrink:0"></span>Miércoles</span><span class="precio-valor">Amarillo</span></div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#2ecc71;display:inline-block;flex-shrink:0"></span>Jueves</span><span class="precio-valor">Verde</span></div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#3498db;display:inline-block;flex-shrink:0"></span>Viernes</span><span class="precio-valor">Azul</span></div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#9b59b6;display:inline-block;flex-shrink:0"></span>Sábado</span><span class="precio-valor">Morado</span></div>
+      <div class="precio-row"><span style="display:flex;align-items:center;gap:0.6rem;"><span style="width:14px;height:14px;border-radius:50%;background:#ff69b4;display:inline-block;flex-shrink:0"></span>Domingo</span><span class="precio-valor">Rosa</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⏱️ Caducidades en frío</div>
+      <div style="font-size:0.72rem; color:var(--gris); margin-bottom:0.8rem;">Elaboraciones propias · Frío constante · Táper cerrado</div>
+
+      <div class="plato-row">
+        <div><div class="plato-nombre">Alioli (Hellmann's + ajo)</div></div>
+        <div></div>
+        <div class="badge verde">5-7 días</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Miel-mostaza</div></div>
+        <div></div>
+        <div class="badge verde">7-10 días</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Chimichurri</div></div>
+        <div></div>
+        <div class="badge verde">7 días</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Salsa bravas</div></div>
+        <div></div>
+        <div class="badge naranja">4-5 días</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Fondos y caldos</div></div>
+        <div></div>
+        <div class="badge naranja">3-4 días</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Guisos (lentejas, alubias)</div></div>
+        <div></div>
+        <div class="badge naranja">3-4 días</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Ensaladilla</div></div>
+        <div></div>
+        <div class="badge naranja">4 días máx.</div>
+      </div>
+      <div class="plato-row">
+        <div><div class="plato-nombre">Tortilla</div></div>
+        <div></div>
+        <div class="badge rojo">48h</div>
+      </div>
+    </div>
+
+    <div class="nota-pie">Sistema diseñado con María · César revisa fechas en cocina · Pegatinas redondas 19mm · 7 colores</div>
+  </div>
+
   <!-- COMANDAS -->
   <div class="section" id="tab-comandas">
     <div class="pendiente-section">
@@ -795,4 +869,57 @@
 
       <div class="proveedor-block">
         <div class="proveedor-nombre">🥦 Fructifera — Verduras</div>
-        <div class="precio-r
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Teléfono / email</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+      </div>
+
+      <div class="proveedor-block">
+        <div class="proveedor-nombre">🏪 Gadis / DIS / Makro / Mercadona</div>
+        <div class="precio-row"><span class="precio-producto" style="color:var(--gris)">Contactos comerciales</span><span class="precio-valor" style="color:var(--gris)">Pendiente</span></div>
+      </div>
+
+    </div>
+
+    <div class="nota-pie">Mantén pulsado un número o email para copiarlo · Actualizado 11/03/2026</div>
+  </div>
+
+</main>
+
+<script>
+  // Fecha
+  const d = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('fecha-hoy').innerHTML = dias[d.getDay()] + '<br>' + d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+
+  // Color del día
+  const coloresDia = [
+    { nombre: 'Rosa', hex: '#ff69b4' },      // Domingo
+    { nombre: 'Rojo', hex: '#e74c3c' },       // Lunes
+    { nombre: 'Naranja', hex: '#e67e22' },    // Martes
+    { nombre: 'Amarillo', hex: '#f1c40f' },   // Miércoles
+    { nombre: 'Verde', hex: '#2ecc71' },      // Jueves
+    { nombre: 'Azul', hex: '#3498db' },       // Viernes
+    { nombre: 'Morado', hex: '#9b59b6' }      // Sábado
+  ];
+  const hoy = coloresDia[d.getDay()];
+  const circulo = document.getElementById('circulo-color');
+  const nombreDia = document.getElementById('nombre-dia');
+  const colorNombre = document.getElementById('color-nombre');
+  if (circulo) circulo.style.background = hoy.hex;
+  if (nombreDia) nombreDia.textContent = dias[d.getDay()];
+  if (colorNombre) colorNombre.textContent = 'Pegatina ' + hoy.nombre;
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var id = this.getAttribute('data-tab');
+      document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+      this.classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
