@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Urbana — Recetas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f3f4f6; min-height: 100vh; }
+    .nav { background: #1F4E79; color: white; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+    .nav a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 13px; }
+    .nav a:hover { color: white; }
+    .nav span { color: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="LaUrbana_Dashboard.html">🍽️ Dashboard</a>
+    <span>›</span>
+    <span style="color:white;font-weight:bold">🧑‍🍳 Recetas</span>
+  </div>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const RECIPES = [
+      {
+        id: "garbanzos-pico",
+        emoji: "🫘",
+        title: "Garbanzos con pico de gallo",
+        subtitle: "Pincho cortesía · 40 raciones · Frío",
+        color: "#1F4E79",
+        ingredients: [
+          { group: "Base", items: [
+            "Garbanzos cocidos escurridos: 2,4kg (10 botes 400g)",
+            "Tomate pera firme: 3kg (~40 tomates)",
+            "Pimiento verde: 3 unidades",
+            "Cebolla morada: 3 unidades",
+            "Pepino: 1 unidad",
+            "Jalapeño de bote escurrido: 130g (~1 bote mediano)",
+            "Cilantro fresco: 2 manojos",
+            "Sésamo tostado: al gusto para decorar",
+          ]},
+          { group: "Aliño", items: [
+            "Tahini: 280g = ~17 cdas soperas",
+            "Lima (zumo): 5 limas (~75ml = 5 cdas soperas)",
+            "Lima (ralladura): de esas mismas 5 limas",
+            "Aceite de oliva virgen: 180ml = 12 cdas soperas",
+            "Miel: 1 cda sopera (15ml)",
+            "Sal y pimienta: al gusto",
+          ]},
+        ],
+        steps: [
+          { title: "Aliño — emulsionar", duration: 0, text: "En un bol: mezcla 280g (17 cdas soperas) de tahini con el zumo de 5 limas. Va a espesar — es normal. Añade 180ml (12 cdas soperas) de aceite poco a poco removiendo con varilla. Incorpora agua fría cucharada a cucharada hasta textura de vinagreta espesa. Añade 1 cda sopera de miel. Ralla las 5 limas encima al final. Sal y pimienta. Guarda en tarro cerrado en nevera.", alert: null },
+          { title: "Preparar base (viernes)", duration: 0, text: "Abre y escurre los 10 botes de garbanzos. Sécalos bien. Corta tomate en dados de 5mm — guarda SIN sal en bolsa de vacío separada. Corta pimiento verde, cebolla morada y pepino en brunoise fina. Pica jalapeño escurrido fino. Guarda pimiento + cebolla + pepino + jalapeño juntos en bolsa de vacío. Cilantro picado en tupper tapado.", alert: null },
+          { title: "Montaje (sábado, 30-60 min antes)", duration: 0, text: "Mezcla en bol grande: garbanzos + tomate escurrido + pimiento/cebolla/pepino/jalapeño + cilantro. Añade el aliño poco a poco. Empieza con menos — el garbanzo absorbe mucho. Prueba y ajusta. Emplata en vasito o tarrina. Sésamo tostado por encima al servir.", alert: "La mezcla aliñada aguanta máximo 2-3h. No aliñar todo de golpe." },
+        ]
+      },
+      {
+        id: "tarta-queso",
+        emoji: "🍮",
+        title: "Vasito de tarta de queso",
+        subtitle: "Postre · 10 vasitos · Sin horno · Mambo",
+        color: "#833C11",
+        ingredients: [
+          { group: "Caramelo (cazo al fuego — NUNCA en Mambo)", items: [
+            "Azúcar blanco: 100g = ~7 cdas soperas",
+            "Agua: 1 cda sopera (15ml)",
+            "Nata 35% MG: 130ml = ~9 cdas soperas",
+            "Mantequilla fría: 10g = ~1 cda de postre colmada",
+            "Sal fina: 3g = ½ cda de postre rasa",
+          ]},
+          { group: "Base (Mambo)", items: [
+            "Galletas Digestive: 250g (~1 paquete)",
+            "Mantequilla: 80g = ~5 cdas soperas fundida",
+            "Leche entera (solo si queda muy seca): 30ml = 2 cdas soperas",
+          ]},
+          { group: "Relleno (Mambo)", items: [
+            "Queso crema Philadelphia: 500g (~2 tarrinas de 250g)",
+            "Nata 35% MG: 300ml = 20 cdas soperas",
+            "Leche entera: 130ml = ~9 cdas soperas",
+            "Azúcar blanco: 70g = ~5 cdas soperas",
+            "Gelatina neutra en láminas: 7 láminas (contar)",
+          ]},
+          { group: "Guarnición", items: [
+            "Macadamia tostada: 150g (15g por vasito — SIEMPRE al último momento)",
+          ]},
+        ],
+        steps: [
+          { title: "Caramelo — calentar nata", duration: 60, text: "Pon 130ml (9 cdas soperas) de nata en un vaso apto para microondas. 1 minuto a potencia máxima. Tiene que salir humeando. Reserva.", alert: "El caramelo SIEMPRE en cazo al fuego — NUNCA en el Mambo." },
+          { title: "Caramelo — fundir azúcar", duration: 0, text: "En un cazo: 100g (7 cdas soperas) de azúcar + 1 cda sopera de agua. Fuego MEDIO. NO remuevas. Observa: blanco → amarillo → naranja → marrón oscuro. Cuando esté marrón oscuro — apaga.", alert: "Marrón oscuro = correcto. Negro = quemado — tirar y empezar de nuevo." },
+          { title: "Caramelo — acabar", duration: 120, text: "Fuera del fuego: añade 10g (1 cda postre colmada) de mantequilla fría. Burbujea — normal. Mueve el cazo. Añade la nata caliente poco a poco con varilla. Fuego MEDIO 2 minutos removiendo. Añade 3g de sal (½ cda postre rasa). Bote. Deja enfriar.", alert: null },
+          { title: "Base — triturar galletas (Mambo)", duration: 15, text: "Pon 250g de galletas Digestive en el Mambo. Velocidad 10 — 15 segundos. Pasa el polvo a un bol.", alert: null },
+          { title: "Base — fundir mantequilla (Mambo)", duration: 120, text: "Sin lavar el vaso: echa 80g (5 cdas soperas) de mantequilla. 60°C — Velocidad 2 — 2 minutos.", alert: null },
+          { title: "Base — compactar en vasitos", duration: 0, text: "Mezcla el polvo de galleta con la mantequilla fundida. Arena mojada = textura correcta. 2 cdas soperas por vasito (~20g). Aprieta con el fondo de la cuchara. Máximo 1cm. Nevera.", alert: null },
+          { title: "Gelatina — hidratar", duration: 300, text: "Bol con agua fría. Mete las 7 láminas de gelatina. 5 minutos — se pondrán blandas.", alert: null },
+          { title: "Relleno — calentar (Mambo)", duration: 360, text: "Echa en el Mambo: 500g queso crema + 300ml (20 cdas soperas) nata + 130ml (9 cdas soperas) leche + 70g (5 cdas soperas) azúcar. 85°C — Velocidad 3 — 6 minutos.", alert: null },
+          { title: "Relleno — añadir gelatina (Mambo)", duration: 30, text: "Coge las 7 láminas, aprieta para escurrir el agua, échalas en el vaso. Velocidad 4 — 30 segundos.", alert: null },
+          { title: "Relleno — reposar", duration: 300, text: "Espera 5 minutos sin tocar nada. El relleno necesita perder temperatura antes de verter.", alert: null },
+          { title: "Montaje — verter y esperar", duration: 1200, text: "Vierte el relleno en cada vasito — deja 1cm libre arriba. Espera 20 minutos en la encimera antes de poner el caramelo.", alert: null },
+          { title: "Montaje — decorar con caramelo", duration: 0, text: "Caramelo a temperatura ambiente en el biberón. Zigzag o círculos encima. Palillo para remolinos. Nevera hasta el día siguiente.", alert: null },
+          { title: "Al servir — macadamia", duration: 0, text: "Pica 150g de macadamia en trozos gordos — 15g por vasito JUSTO antes de llevar a la mesa.", alert: "Macadamia siempre al último momento — se reblandece en 30 minutos." },
+        ]
+      },
+      {
+        id: "bravas",
+        emoji: "🌶️",
+        title: "Salsa Bravas",
+        subtitle: "Base 1L tomate frito · ~90 tapas · Picante suave",
+        color: "#C00000",
+        ingredients: [
+          { group: "Ingredientes", items: [
+            "Tomate frito: 1.000g = 1 litro",
+            "Caldo de pollo: 400ml (mejor vaso medidor)",
+            "Cebolla dulce: 500g (~2 medianas)",
+            "Zanahoria: 200g (~2-3 unidades)",
+            "Ajo: 7-8 dientes",
+            "Aceite de oliva: 100ml = 7 cdas soperas",
+            "Pimentón dulce La Vera: 37ml = 2½ cdas soperas",
+            "Pimentón picante La Vera: 15ml = 1 cda sopera",
+            "Cayena molida: 2,5ml = ½ cda de postre",
+            "Vinagre de vino blanco: 37ml = 2½ cdas soperas",
+            "Azúcar blanco: 5ml = 1 cda de postre",
+            "Sal: al gusto al final",
+          ]},
+        ],
+        steps: [
+          { title: "Preparar verduras", duration: 0, text: "Pela y corta en trozos grandes: 500g cebolla dulce, 200g zanahoria y 7-8 dientes de ajo. No hace falta fino — se tritura todo al final.", alert: null },
+          { title: "Pochar cebolla y zanahoria", duration: 600, text: "Calienta 100ml (7 cdas soperas) de aceite en un cazo a fuego MEDIO. Añade la cebolla y la zanahoria. Pocha 10 minutos removiendo.", alert: null },
+          { title: "Añadir ajo", duration: 120, text: "Añade 7-8 dientes de ajo en trozos. 2 minutos más removiendo.", alert: null },
+          { title: "Pimentón — fuego BAJO", duration: 30, text: "Baja al MÍNIMO. Añade 2½ cdas soperas (37ml) de pimentón dulce + 1 cda sopera (15ml) de pimentón picante. Remueve 30 segundos sin parar.", alert: "Fuego MÍNIMO obligatorio. Con fuego alto el pimentón se quema y amarga toda la salsa." },
+          { title: "Añadir tomate frito", duration: 180, text: "Sube a fuego MEDIO. Añade 1.000g de tomate frito. Mezcla bien. 3 minutos.", alert: null },
+          { title: "Añadir líquidos y especias", duration: 480, text: "Añade 400ml caldo de pollo + 2½ cdas soperas (37ml) vinagre blanco + 1 cda de postre (5ml) azúcar + ½ cda de postre (2,5ml) cayena. Fuego SUAVE 8 minutos.", alert: null },
+          { title: "Templar y triturar", duration: 300, text: "Apaga el fuego. Deja templar 5 minutos. Tritura con el túrmix hasta que quede completamente lisa.", alert: null },
+          { title: "Probar y ajustar", duration: 0, text: "Prueba: sal y picante. Ajusta ahora. Si queda muy espesa: chorrito de caldo. Si queda muy líquida: 2 minutos más de fuego. Enfriar completamente antes de meter en biberón.", alert: "Guardar siempre fría. Nunca caliente en el biberón." },
+        ]
+      },
+      {
+        id: "chimichurri",
+        emoji: "🫙",
+        title: "Chimichurri mejorado",
+        subtitle: "~600ml · 3 bolsas de vacío de 200g",
+        color: "#375623",
+        ingredients: [
+          { group: "Especias (tostar en seco)", items: [
+            "Comino en polvo: 5ml = 1 cda de postre",
+            "Orégano: 30ml = 2 cdas soperas",
+            "Tomillo: 15ml = 1 cda sopera",
+            "Perejil seco: 15ml = 1 cda sopera",
+          ]},
+          { group: "Mezcla en frío", items: [
+            "Aceite de girasol: 300ml = 20 cdas soperas",
+            "Vinagre de vino blanco: 100-120ml = 7-8 cdas soperas",
+            "Ajo: 4 dientes — picado FINO a cuchillo (no press ni batidora)",
+            "Pimentón picante: 5ml = 1 cda de postre rasa",
+            "Pimentón dulce: 5ml = 1 cda de postre rasa",
+            "Cayena: espolvorear al gusto",
+            "Zumo de limón: ~30ml = 2 cdas soperas",
+            "Sal: al gusto",
+          ]},
+        ],
+        steps: [
+          { title: "Tostar especias en seco", duration: 0, text: "Sartén seca a fuego MEDIO: 1 cda de postre (5ml) comino + 2 cdas soperas (30ml) orégano + 1 cda sopera (15ml) tomillo + 1 cda sopera (15ml) perejil seco. Remueve constantemente hasta que humeen.", alert: "Sin dejar de mover. En cuanto humeen, fuera del fuego — se queman rápido." },
+          { title: "Enfriar especias", duration: 600, text: "Pasa las especias a un plato. Deja enfriar completamente — mínimo 10 minutos. Si las mezclas calientes con el aceite el chimichurri queda amargo.", alert: null },
+          { title: "Picar el ajo", duration: 0, text: "Pica 4 dientes de ajo muy finos a cuchillo. NO uses press de ajos ni batidora — el ajo prensado amarga con el tiempo.", alert: null },
+          { title: "Mezclar en frío", duration: 0, text: "En un bol: especias frías + 300ml (20 cdas soperas) aceite de girasol + 100-120ml (7-8 cdas soperas) vinagre blanco + ajo picado + 1 cda de postre rasa pimentón picante + 1 cda de postre rasa pimentón dulce + cayena al gusto. Mezcla bien.", alert: null },
+          { title: "Triturar y acabar", duration: 0, text: "Tritura con el túrmix — puede quedar algo de textura. Añade 30ml (2 cdas soperas) de zumo de limón al final. Sal al gusto. Prueba.", alert: "El limón siempre al final, nunca al calor." },
+          { title: "Reposar", duration: 7200, text: "Deja reposar mínimo 2 horas antes de usar. Mejor de un día para otro.", alert: null },
+          { title: "Envasar al vacío", duration: 0, text: "Divide en 3 bolsas de vacío de ~200g. Completamente frío antes de envasar. Fecha cada bolsa. Aguanta 3 semanas en nevera.", alert: "Completamente frío antes de envasar. Caliente genera condensación." },
+        ]
+      },
+      {
+        id: "garbanzos-setas",
+        emoji: "🍄",
+        title: "Garbanzos con setas",
+        subtitle: "Guiso · ~55 raciones 70g · 1kg garbanzos remojados",
+        color: "#4E3B2A",
+        ingredients: [
+          { group: "Base", items: [
+            "Garbanzos secos remojados +12h: 1kg → 2,5kg cocidos",
+            "Caldo de cocción reservado: 2L (mejor vaso medidor) — NO tirar",
+          ]},
+          { group: "Setas", items: [
+            "Setas cardo: 1kg — cuadrados de 1cm",
+            "Portobello: 500g — rodajas de 0,5cm",
+            "Polvo de shiitake: 20g = 4 cdas soperas rasas",
+          ]},
+          { group: "Embutido y sofrito", items: [
+            "Chorizo rojo ahumado: 400g — daditos de 1cm",
+            "Cebolla blanca: 2 cebollas grandes — triturada",
+            "Ajo: 10 dientes — triturado",
+            "Guindillas frescas: 2 enteras — RETIRAR antes de servir",
+            "Pimiento choricero (carne): ~40g = 4 cdas soperas",
+            "Tomate concentrado tubo: ~80g = 4 cdas soperas",
+          ]},
+          { group: "Especias", items: [
+            "Pimentón dulce La Vera: 30ml = 2 cdas soperas",
+            "Pimentón picante La Vera: 15ml = 1 cda sopera",
+            "Comino molido: 15ml = 1 cda sopera",
+            "Cayena seca entera: 1 unidad — RETIRAR antes de servir",
+            "Laurel: 4 hojas (2 en cocción + 2 en guiso)",
+            "Aceite de oliva: 100ml = 7 cdas soperas",
+            "Sal: ajustar al final",
+          ]},
+        ],
+        steps: [
+          { title: "Cocer garbanzos — arrancar", duration: 1020, text: "Escurre el agua del remojo. Enjuaga con agua FRÍA. Olla grande: garbanzos + 4L agua FRÍA + 2 hojas laurel + 2 cdas soperas de sal. Fuego ALTO. En La Urbana el primer hervor tarda ~17 minutos. Quita la espuma con un cazo.", alert: "Agua fría siempre. El agua caliente endurece el garbanzo por fuera." },
+          { title: "Cocer garbanzos — simmer", duration: 2700, text: "Fuego BAJO, tapa. 45-50 minutos. Prueba a los 45 min — tiene que poder machacarse con los dedos sin esfuerzo.", alert: null },
+          { title: "Escurrir y reservar caldo", duration: 0, text: "Apaga. Escurre los garbanzos. RESERVA 2L del caldo antes de tirar nada.", alert: "Si tiras el caldo el guiso queda seco y sin profundidad." },
+          { title: "Mise en place", duration: 0, text: "Tritura en batidora: 2 cebollas grandes + 10 dientes de ajo. Reserva. Corta 400g chorizo en daditos de 1cm. Corta 1kg setas cardo en cuadrados de 1cm y 500g portobello en rodajas de 0,5cm.", alert: null },
+          { title: "PASO 1 — Chorizo (fuego ALTO)", duration: 300, text: "Pon 100ml (7 cdas soperas) de aceite en la olla a fuego ALTO 2 minutos. Añade 400g de chorizo en daditos. 5 minutos hasta dorado. Saca el chorizo a un plato. Deja el aceite con la grasa en la olla.", alert: null },
+          { title: "PASO 2 — Sofrito con guindilla (fuego MEDIO)", duration: 600, text: "En el mismo aceite: echa 2 guindillas enteras. 3 minutos a fuego MEDIO. Añade 2 cebollas grandes trituradas + 10 dientes de ajo triturados. 7 minutos hasta dorado. Retira las 2 guindillas.", alert: null },
+          { title: "PASO 3 — Especias (fuego BAJO)", duration: 180, text: "Baja al MÍNIMO. Añade 4 cdas soperas (~40g) pimiento choricero + 4 cdas soperas (~80g) tomate concentrado. Remueve 2 minutos. Espolvorea: 4 cdas soperas rasas (20g) shiitake + 2 cdas soperas pimentón dulce + 1 cda sopera pimentón picante + 1 cda sopera comino + 1 cayena entera + 2 hojas laurel. Remueve 1 minuto.", alert: "Fuego MÍNIMO. El pimentón con fuego alto amarga todo el guiso." },
+          { title: "PASO 4 — Setas (fuego MEDIO)", duration: 720, text: "Sube a fuego MEDIO. Añade 1kg setas cardo + 500g portobello. 12 minutos salteando vivo — gomosas, no blandurrias. Añade 1 cda sopera de sal.", alert: null },
+          { title: "PASO 5 — Guiso final (fuego BAJO)", duration: 900, text: "Añade 2,5kg garbanzos cocidos + 2L caldo de cocción + el chorizo reservado. Fuego BAJO, tapa. 15 minutos.", alert: null },
+          { title: "PASO 6 — Espesar (fuego MEDIO)", duration: 600, text: "Fuego MEDIO. 10 minutos: chafa el 25% de los garbanzos contra el borde de la olla con una cuchara. Espesa el guiso de forma natural.", alert: null },
+          { title: "Acabar y reposar", duration: 600, text: "Retira la cayena y las hojas de laurel. Prueba de sal. Reposo 10 minutos tapado. Servir caliente con perejil picado.", alert: "Verificar que no queden cayena ni guindillas antes de servir." },
+        ]
+      }
+    ];
+
+    function Timer({ seconds }) {
+      const [remaining, setRemaining] = React.useState(seconds);
+      const [running, setRunning] = React.useState(false);
+      const [done, setDone] = React.useState(false);
+      const ref = React.useRef(null);
+
+      React.useEffect(() => {
+        if (running && remaining > 0) {
+          ref.current = setInterval(() => {
+            setRemaining(r => {
+              if (r <= 1) { clearInterval(ref.current); setRunning(false); setDone(true); return 0; }
+              return r - 1;
+            });
+          }, 1000);
+        }
+        return () => clearInterval(ref.current);
+      }, [running]);
+
+      const reset = () => { setRemaining(seconds); setRunning(false); setDone(false); };
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      const pct = (seconds - remaining) / seconds;
+      const radius = 18;
+      const circ = 2 * Math.PI * radius;
+
+      return (
+        <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:10, padding:"8px 12px",
+          background: done ? "#f0fdf4" : "#fffbeb", borderRadius:8,
+          border: "1px solid " + (done ? "#bbf7d0" : "#fde68a") }}>
+          <svg width="40" height="40" style={{ transform:"rotate(-90deg)", flexShrink:0 }}>
+            <circle cx="20" cy="20" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="4" />
+            <circle cx="20" cy="20" r={radius} fill="none" stroke={done ? "#16a34a" : "#f59e0b"} strokeWidth="4"
+              strokeDasharray={String(circ)} strokeDashoffset={String(circ * (1 - pct))}
+              style={{ transition:"stroke-dashoffset 1s linear" }} />
+          </svg>
+          <div style={{ fontSize:17, fontWeight:"bold", color: done ? "#16a34a" : "#92400e", minWidth:44 }}>
+            {done ? "OK" : m + ":" + String(s).padStart(2,"0")}
+          </div>
+          <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+            {!done && (
+              <button onClick={() => setRunning(v => !v)}
+                style={{ padding:"5px 14px", borderRadius:6, border:"none", cursor:"pointer", fontSize:13,
+                  fontWeight:"bold", background: running ? "#ef4444" : "#f59e0b", color:"white" }}>
+                {running ? "Parar" : "Iniciar"}
+              </button>
+            )}
+            {(done || remaining < seconds) && (
+              <button onClick={reset} style={{ padding:"5px 10px", borderRadius:6, border:"1px solid #d1d5db", cursor:"pointer", fontSize:13, background:"white" }}>
+                Reset
+              </button>
+            )}
+            {done && <span style={{ fontSize:13, color:"#16a34a", fontWeight:"bold" }}>¡Listo!</span>}
+          </div>
+        </div>
+      );
+    }
+
+    function RecipeCard({ recipe }) {
+      const [activeStep, setActiveStep] = React.useState(0);
+      const [doneSteps, setDoneSteps] = React.useState(new Set());
+      const [showIngr, setShowIngr] = React.useState(false);
+
+      const markDone = (i) => {
+        setDoneSteps(prev => new Set([...prev, i]));
+        if (i + 1 < recipe.steps.length) setActiveStep(i + 1);
+      };
+
+      return (
+        <div style={{ background:"white", borderRadius:14, overflow:"hidden", boxShadow:"0 2px 10px rgba(0,0,0,0.1)" }}>
+          <div style={{ background:recipe.color, padding:"18px 20px", color:"white" }}>
+            <div style={{ fontSize:32 }}>{recipe.emoji}</div>
+            <div style={{ fontSize:21, fontWeight:"bold", marginTop:4 }}>{recipe.title}</div>
+            <div style={{ fontSize:13, opacity:0.85, marginTop:3 }}>{recipe.subtitle}</div>
+            <button onClick={() => setShowIngr(v => !v)}
+              style={{ marginTop:12, padding:"5px 16px", borderRadius:20,
+                border:"1px solid rgba(255,255,255,0.5)", background:"rgba(255,255,255,0.15)",
+                color:"white", cursor:"pointer", fontSize:13 }}>
+              {showIngr ? "Ocultar ingredientes" : "Ver ingredientes"}
+            </button>
+          </div>
+
+          {showIngr && (
+            <div style={{ padding:"14px 20px", background:"#f9fafb", borderBottom:"1px solid #e5e7eb" }}>
+              {recipe.ingredients.map((g, gi) => (
+                <div key={gi} style={{ marginBottom:12 }}>
+                  <div style={{ fontWeight:"bold", fontSize:11, color:recipe.color, marginBottom:5, textTransform:"uppercase" }}>{g.group}</div>
+                  {g.items.map((item, ii) => (
+                    <div key={ii} style={{ fontSize:13, color:"#374151", padding:"3px 0 3px 10px", borderLeft:"3px solid " + recipe.color + "40" }}>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div style={{ padding:"14px 20px" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+              <div style={{ fontSize:12, color:"#6b7280", fontWeight:"bold" }}>{doneSteps.size}/{recipe.steps.length} pasos</div>
+              {doneSteps.size > 0 && (
+                <button onClick={() => { setDoneSteps(new Set()); setActiveStep(0); }}
+                  style={{ fontSize:11, color:"#9ca3af", border:"none", background:"none", cursor:"pointer" }}>
+                  Reiniciar
+                </button>
+              )}
+            </div>
+            <div style={{ height:5, background:"#e5e7eb", borderRadius:3, marginBottom:14 }}>
+              <div style={{ height:"100%", borderRadius:3, background:recipe.color,
+                width: ((doneSteps.size / recipe.steps.length) * 100) + "%", transition:"width 0.4s" }} />
+            </div>
+
+            {recipe.steps.map((step, i) => {
+              const isActive = activeStep === i;
+              const isDone = doneSteps.has(i);
+              return (
+                <div key={i} style={{ marginBottom:8, borderRadius:10, overflow:"hidden",
+                  border:"1px solid " + (isActive ? recipe.color : (isDone ? "#bbf7d0" : "#e5e7eb")),
+                  background: isDone ? "#f0fdf4" : (isActive ? recipe.color + "08" : "white") }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", cursor:"pointer" }}
+                    onClick={() => setActiveStep(isActive ? null : i)}>
+                    <div style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center",
+                      justifyContent:"center", flexShrink:0,
+                      background: isDone ? "#16a34a" : (isActive ? recipe.color : "#e5e7eb"),
+                      color: (isDone || isActive) ? "white" : "#6b7280", fontWeight:"bold", fontSize:13 }}>
+                      {isDone ? "✓" : i + 1}
+                    </div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:14, fontWeight:"bold", color: isDone ? "#16a34a" : "#111827" }}>{step.title}</div>
+                      {step.duration > 0 && (
+                        <div style={{ fontSize:12, color:"#6b7280" }}>
+                          {Math.floor(step.duration / 60)} min{step.duration % 60 > 0 ? " " + (step.duration % 60) + " seg" : ""}
+                        </div>
+                      )}
+                    </div>
+                    <span style={{ color:"#9ca3af", fontSize:12 }}>{isActive ? "▲" : "▼"}</span>
+                  </div>
+
+                  {isActive && (
+                    <div style={{ padding:"0 14px 14px" }}>
+                      {step.alert && (
+                        <div style={{ background:"#fff7ed", border:"1px solid #fed7aa", borderRadius:7,
+                          padding:"8px 12px", marginBottom:10, fontSize:13, color:"#c2410c", fontWeight:"600" }}>
+                          ⚠️ {step.alert}
+                        </div>
+                      )}
+                      <div style={{ fontSize:14, color:"#374151", lineHeight:1.65, marginBottom:8 }}>{step.text}</div>
+                      {step.duration > 0 && <Timer seconds={step.duration} />}
+                      {!isDone && (
+                        <button onClick={() => markDone(i)}
+                          style={{ marginTop:12, padding:"9px 20px", borderRadius:8, border:"none",
+                            cursor:"pointer", fontSize:14, fontWeight:"bold",
+                            background:recipe.color, color:"white", width:"100%" }}>
+                          ✓ Paso completado
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {doneSteps.size === recipe.steps.length && (
+              <div style={{ textAlign:"center", padding:"14px", background:"#f0fdf4", borderRadius:10,
+                color:"#16a34a", fontWeight:"bold", fontSize:16, marginTop:4 }}>
+                🎉 ¡Receta completada!
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [selected, setSelected] = React.useState(null);
+      return (
+        <div style={{ fontFamily:"Arial, sans-serif", maxWidth:480, margin:"0 auto", padding:16, background:"#f3f4f6", minHeight:"100vh" }}>
+          <div style={{ textAlign:"center", marginBottom:20, paddingTop:8 }}>
+            <div style={{ fontSize:30 }}>🧑‍🍳</div>
+            <div style={{ fontSize:20, fontWeight:"bold", color:"#111827" }}>La Urbana — Recetas</div>
+            <div style={{ fontSize:13, color:"#6b7280", marginTop:2 }}>Temporizadores · Cantidades exactas · Paso a paso</div>
+          </div>
+
+          {selected === null ? (
+            <div>
+              {RECIPES.map(r => (
+                <button key={r.id} onClick={() => setSelected(r.id)}
+                  style={{ width:"100%", marginBottom:10, padding:"14px 18px", borderRadius:12, border:"none",
+                    cursor:"pointer", background:"white", boxShadow:"0 1px 4px rgba(0,0,0,0.08)",
+                    display:"flex", alignItems:"center", gap:14, textAlign:"left" }}>
+                  <div style={{ width:44, height:44, borderRadius:10, background:r.color,
+                    display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>
+                    {r.emoji}
+                  </div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight:"bold", fontSize:15, color:"#111827" }}>{r.title}</div>
+                    <div style={{ fontSize:12, color:"#6b7280", marginTop:2 }}>{r.subtitle}</div>
+                  </div>
+                  <span style={{ color:"#9ca3af", fontSize:18 }}>›</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div>
+              <button onClick={() => setSelected(null)}
+                style={{ marginBottom:14, padding:"7px 16px", borderRadius:8, border:"1px solid #e5e7eb",
+                  background:"white", cursor:"pointer", fontSize:13, color:"#374151" }}>
+                ← Todas las recetas
+              </button>
+              <RecipeCard recipe={RECIPES.find(r => r.id === selected)} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
